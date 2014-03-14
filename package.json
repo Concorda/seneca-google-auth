@@ -1,0 +1,33 @@
+{
+  "name": "seneca-google-auth",
+  "version": "0.1.0",
+  "description": "google auth plugin for seneca-auth",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nherment/seneca-google-auth.git"
+  },
+  "keywords": [
+    "seneca",
+    "oauth",
+    "auth",
+    "google",
+    "plugin"
+  ],
+  "author": "Nicolas Herment <nherment@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nherment/seneca-google-auth/issues"
+  },
+  "homepage": "https://github.com/nherment/seneca-google-auth",
+  "dependencies": {
+    "passport-google-oauth": "0.1.5"
+  },
+  "peerDependencies": {
+    "seneca-auth": "*",
+    "seneca": "*"
+  }
+}
