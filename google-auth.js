@@ -15,7 +15,7 @@ module.exports = function (options) {
     callbackURL:    options.urlhost + '/auth/google/callback',
     scope:          ['https://www.googleapis.com/auth/userinfo.profile', ' https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/analytics.readonly']
   }, function (accessToken, refreshToken, params, profile, done) {
-    console.log('GOOGLE AUTH CALLBACK', params, profile)
+
     var data = {
       email: profile.emails.length > 0 ? profile.emails[0].value : null,
       nick: profile.displayName,
