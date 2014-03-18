@@ -2,7 +2,7 @@
   "name": "seneca-google-auth",
   "version": "0.1.0",
   "description": "google auth plugin for seneca-auth",
-  "main": "index.js",
+  "main": "google-auth.js",
   "scripts": {
     "test": "mocha test --reporter spec"
   },

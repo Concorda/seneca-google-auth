@@ -14,9 +14,8 @@ module.exports = function (options) {
     clientSecret:   options.clientSecret,
     callbackURL:    options.urlhost + '/auth/google/callback',
     scope:          ['https://www.googleapis.com/auth/userinfo.profile', ' https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/analytics.readonly']
-  })
-
-  var authCallback = function (accessToken, refreshToken, params, profile, done) {
+  }, function (accessToken, refreshToken, params, profile, done) {
+    console.log('GOOGLE AUTH CALLBACK', params, profile)
     var data = {
       email: profile.emails.length > 0 ? profile.emails[0].value : null,
       nick: profile.displayName,
@@ -31,9 +30,9 @@ module.exports = function (options) {
       when: new Date().toISOString()
     };
     done(null, data);
-  }
+  })
 
-  seneca.act({role: 'auth', cmd: 'register_service', service: 'google', plugin: authPlugin, authCallback: authCallback})
+  seneca.act({role: 'auth', cmd: 'register_service', service: 'google', plugin: authPlugin, conf: options})
 
   return {
     name: 'google-auth'
