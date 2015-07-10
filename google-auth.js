@@ -8,15 +8,13 @@ var GoogleStrategy = passport_google_oauth.OAuth2Strategy
 module.exports = function (options) {
 
   var seneca = this
+  var service = 'google'
 
   var params = {
     clientID:       options.clientID,
     clientSecret:   options.clientSecret,
     callbackURL:    options.urlhost + (options.callbackUrl || '/auth/google/callback'),
-    scope:          [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      ' https://www.googleapis.com/auth/userinfo.email'
-    ]// some defaults
+    scope:          ['https://www.googleapis.com/auth/userinfo.profile', ' https://www.googleapis.com/auth/userinfo.email']
   }
   params = _.extend(params, options.serviceParams || {})
   var authPlugin = new GoogleStrategy(params, function (accessToken, refreshToken, params, profile, done) {
@@ -59,8 +57,17 @@ module.exports = function (options) {
       data.lastName = data.name.familyName
       delete data.name
     }
-    data.name = data.name || (data.firstName + ' ' + data.lastName),
-      cb(null, data)
+    data.name = data.firstName + ' ' + data.lastName
+
+    data[ service + '_id' ] = data.identifier
+
+    data.service = data.service || {}
+    data.service[ service ] = {
+      credentials: data.credentials,
+      userdata: data.userdata,
+      when: data.when
+    }
+    cb(null, data)
   }
 
   seneca.add({role: 'google', cmd: 'prepareLoginData'}, prepareLoginData)
