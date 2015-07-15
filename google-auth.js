@@ -20,8 +20,8 @@ module.exports = function (options) {
   var authPlugin = new GoogleStrategy(params, function (accessToken, refreshToken, params, profile, done) {
     seneca.act(
       {
-        role: 'google',
-        cmd: 'prepareLoginData',
+        role: 'auth',
+        prepare: 'google-login-data',
         accessToken: accessToken,
         refreshToken: refreshToken,
         profile: profile,
@@ -70,7 +70,7 @@ module.exports = function (options) {
     cb(null, data)
   }
 
-  seneca.add({role: 'google', cmd: 'prepareLoginData'}, prepareLoginData)
+  seneca.add({role: 'auth', prepare: 'google-login-data'}, prepareLoginData)
 
   seneca.act({role: 'auth', cmd: 'register_service', service: 'google', plugin: authPlugin, conf: options})
 

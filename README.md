@@ -44,9 +44,9 @@ Note: serviceParams can be used to pass any other parameter to the passport goog
 
 There is provided a default seneca action that will prepare user data to a more convenient structure.
 If this data structure is not matching the expected user data structure used by your application, you can overwrite the
-seneca action and implement your own prepareLoginData action.
+seneca action and implement your own google-login-data action.
 
- - {role: 'google', cmd: 'prepareLoginData'}
+ - {role: 'google', cmd: 'google-login-data'}
 
 The JSON object provided for this actions contains following data from Google login:
  - accessToken
