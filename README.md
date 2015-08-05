@@ -46,7 +46,7 @@ There is provided a default seneca action that will prepare user data to a more 
 If this data structure is not matching the expected user data structure used by your application, you can overwrite the
 seneca action and implement your own google-login-data action.
 
- - {role: 'google', cmd: 'google-login-data'}
+ - {role: 'auth', prepare: 'google_login_data'}
 
 The JSON object provided for this actions contains following data from Google login:
  - accessToken

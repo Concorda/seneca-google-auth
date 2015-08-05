@@ -70,7 +70,7 @@ module.exports = function (options) {
     cb(null, data)
   }
 
-  seneca.add({role: 'auth', prepare: 'google-login-data'}, prepareLoginData)
+  seneca.add({role: 'auth', prepare: 'google_login_data'}, prepareLoginData)
 
   seneca.act({role: 'auth', cmd: 'register_service', service: 'google', plugin: authPlugin, conf: options})
 
