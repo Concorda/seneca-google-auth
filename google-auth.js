@@ -21,7 +21,7 @@ module.exports = function (options) {
     seneca.act(
       {
         role: 'auth',
-        prepare: 'google-login-data',
+        prepare: 'google_login_data',
         accessToken: accessToken,
         refreshToken: refreshToken,
         profile: profile,
