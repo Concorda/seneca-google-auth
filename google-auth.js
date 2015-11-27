@@ -6,6 +6,18 @@ var CommonAuth = require('./lib/common-google-auth')
 var ExpressAuth = require('./lib/express-google-auth')
 var HapiAuth = require('./lib/hapi-google-auth')
 
+/**
+ *
+ * Google Authentification Seneca Plugin
+ *
+ * @param {Object} options - Plugin options
+ *
+ * @param {string} options.clientID - google Auth Client Id
+ * @param {string} options.clientSecret - google Auth Client Id
+ * @param {string} options.urlhost - url of the client
+ *
+ * @returns {{name: string}} the plugin name, google-auth
+ */
 module.exports = function (options) {
   var seneca = this
   var internals = {}
