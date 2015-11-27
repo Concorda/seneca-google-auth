@@ -1,12 +1,10 @@
 /* Copyright (c) 2012-2013 Richard Rodger, MIT License */
 "use strict";
 
-
 var http = require('http')
 
 var express = require('express')
 var argv    = require('optimist').argv
-
 
 // create a seneca instance
 var seneca  = require('seneca')()
@@ -14,7 +12,6 @@ var seneca  = require('seneca')()
 // use the user and auth plugins
 // the user plugin gives you user account business logic
 seneca.use('user')
-
 // the auth plugin handles HTTP authentication
 seneca.use('auth',{
   // redirects after login are needed for traditional multi-page web apps
@@ -29,12 +26,11 @@ seneca.use('auth',{
 // copy template config.template.js to config.mine.js and customize
 seneca.use('options','config.mine.js')
 
-//seneca.use('../google-auth.js')
-
 var conf = {
   port: argv.p || 3000
 }
 
+// Load the google-auth plugin
 seneca.use('google-auth')
 
 
@@ -42,41 +38,32 @@ seneca.use('google-auth')
 var app = express()
 app.enable('trust proxy')
 
-app.use(express.cookieParser())
-app.use(express.query())
-app.use(express.bodyParser())
-app.use(express.methodOverride())
-app.use(express.json())
-
-app.use(express.session({secret:'seneca'}))
-
-app.use(express.static(__dirname + '/public'))
-
+app.use(express.cookieParser()).
+    use(express.query()).
+    use(express.bodyParser()).
+    use(express.methodOverride()).
+    use(express.json()).
+    use(express.session({secret:'seneca'})).
+    use(express.static(__dirname + '/public'))
 
 // add any middleware provided by seneca plugins
-
-
 app.use( seneca.export('web') )
 
 
 // some express views
-app.engine('ejs',require('ejs-locals'))
-app.set('views', __dirname + '/views')
-app.set('view engine','ejs')
+app.engine('ejs',require('ejs-locals')).
+    set('views', __dirname + '/views').
+    set('view engine','ejs')
 
 app.get('/login', function(req, res){
   res.render('login.ejs',{})
 })
-
 
 // when rendering the account page, use the req.seneca.user object
 // to get user details. This is automatically set up by the auth plugin
 app.get('/account', function(req, res){
   res.render('account.ejs',{locals:{user:req.seneca.user}})
 })
-
-
-
 
 
 // create some test accounts
