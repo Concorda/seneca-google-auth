@@ -1,79 +1,55 @@
-/* Copyright (c) 2013 Paul Negrutiu, MIT License */
+var error = require('eraro')({
+  package: 'google-auth'
+})
 
-var passport_google_oauth = require('passport-google-oauth')
-var _ = require('lodash')
-var GoogleStrategy = passport_google_oauth.OAuth2Strategy
-
+var CommonAuth = require('./lib/common-google-auth')
+var ExpressAuth = require('./lib/express-google-auth')
+var HapiAuth = require('./lib/hapi-google-auth')
 
 module.exports = function (options) {
-
   var seneca = this
-  var service = 'google'
+  var internals = {}
+  internals.accepted_framworks = [
+    'express',
+    'hapi'
+  ]
+  internals.options = options
 
-  var params = {
-    clientID:       options.clientID,
-    clientSecret:   options.clientSecret,
-    callbackURL:    options.urlhost + (options.callbackUrl || '/auth/google/callback'),
-    scope:          ['https://www.googleapis.com/auth/userinfo.profile', ' https://www.googleapis.com/auth/userinfo.email']
-  }
-  params = _.extend(params, options.serviceParams || {})
-  var authPlugin = new GoogleStrategy(params, function (accessToken, refreshToken, params, profile, done) {
-    seneca.act(
-      {
-        role: 'auth',
-        prepare: 'google_login_data',
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        profile: profile,
-        params: params
-      }, done)
-  })
-
-  var prepareLoginData = function(args, cb){
-    var accessToken = args.accessToken
-    var refreshToken = args.refreshToken
-    var profile = args.profile
-    var params = args.params
-
-    var data = {
-      identifier: '' + profile.id,
-      nick: profile.displayName,
-      username: profile.username,
-      credentials: {
-        access: accessToken,
-        refresh: refreshToken,
-        expiresIn: params.expires_in
-      },
-      userdata: profile,
-      when: new Date().toISOString()
-    };
-
-    data = _.extend({}, data, profile)
-    if (data.emails && data.emails.length > 0){
-      data.email = data.emails[0].value
-      data.nick = data.email
-    }
-    if (data.name && _.isObject(data.name)){
-      data.firstName = data.name.givenName
-      data.lastName = data.name.familyName
-      delete data.name
-    }
-    data.name = data.firstName + ' ' + data.lastName
-
-    data[ service + '_id' ] = data.identifier
-
-    data.service = data.service || {}
-    data.service[ service ] = {
-      credentials: data.credentials,
-      userdata: data.userdata,
-      when: data.when
-    }
-    cb(null, data)
+  if (!options.framework) {
+    options.framework = 'express'
   }
 
-  seneca.add({role: 'auth', prepare: 'google_login_data'}, prepareLoginData)
+  internals.choose_framework = function () {
+    if (internals.options.framework === 'express') {
+      internals.load_express_implementation()
+    }
+    else {
+      internals.load_hapi_implementation()
+    }
+  }
 
-  seneca.act({role: 'auth', cmd: 'register_service', service: 'google', plugin: authPlugin, conf: options})
+  internals.check_options = function () {
+    if (seneca.options().plugin.web && seneca.options().plugin.web.framework) {
+      internals.options.framework = seneca.options().plugin.web.framework
+    }
+
+    if (internals.accepted_framworks.indexOf(internals.options.framework) === -1) {
+      throw error('Framework type <' + internals.options.framework + '> not supported.')
+    }
+  }
+
+  internals.load_express_implementation = function () {
+    seneca.use(ExpressAuth, internals.options)
+    seneca.use(CommonAuth, internals.options)
+  }
+
+  internals.load_hapi_implementation = function () {
+    seneca.use(HapiAuth, internals.options)
+    seneca.use(CommonAuth, internals.options)
+  }
+
+  internals.check_options()
+  internals.choose_framework()
 
   return {
     name: 'google-auth'
