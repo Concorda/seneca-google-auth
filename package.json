@@ -18,13 +18,21 @@
     "plugin"
   ],
   "author": "Nicolas Herment <nherment@gmail.com>",
+  "contributors": [
+    {
+      "name": "Mircea Alexandru",
+      "email":"mircea.alexandru@gmail.com",
+      "url" : "https://github.com/mirceaalexandru"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nherment/seneca-google-auth/issues"
   },
   "homepage": "https://github.com/nherment/seneca-google-auth",
   "dependencies": {
-    "passport-google-oauth": "0.1.5"
+    "passport-google-oauth": "0.1.5",
+    "lodash": "~3.10.0"
   },
   "peerDependencies": {
     "seneca-auth": "*",
