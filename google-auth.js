@@ -48,8 +48,13 @@ module.exports = function (options) {
     seneca.use(CommonAuth, internals.options)
   }
 
-  internals.check_options()
-  internals.choose_framework()
+  function init (args, done) {
+    internals.check_options()
+    internals.choose_framework()
+    done()
+  }
+
+  seneca.add('init: google-auth', init)
 
   return {
     name: 'google-auth'
