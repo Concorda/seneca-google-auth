@@ -5,16 +5,16 @@ $(function(){
       username: $('#username').val(),
       password: $('#password').val()
     }
-    http.post('/auth/login',data,showAccount)
+    Http.post('/auth/login',data,showAccount)
     return false
   })
 
   $('#logout').click(function(){
-    http.post('/auth/logout',{},showLogin)
+    Http.post('/auth/logout',{},showLogin)
   })
 
 
-  http.get('/auth/instance',showAccount)
+  Http.get('/auth/instance',showAccount)
 })
 
 
